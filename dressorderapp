@@ -1,0 +1,216 @@
+#Dress Orders
+import datetime
+users = []
+Dress_List_Items = []
+orders_list = []
+
+
+class Dress_List:
+    def __init__(self, dress_id, dress_name, quantity, price):
+        self.Dress_Id = dress_id
+        self.Dress_Name = dress_name
+        self.Quantity = quantity
+        self.Price = price
+
+class Orders:
+    def __init__(self, order_id, user_id, order_at, dress_details):
+        self.Order_id = order_id
+        self.User_id = user_id
+        self.Order_at = order_at
+        self.Dress_details = dress_details
+
+class Stylish_Dress_App:
+    order_count = 0
+
+    def __init__(self, Id: int, Name: str, Email: str, Password: str,Role:str):
+        self.userid = Id
+        self.name = Name
+        self.email = Email
+        self.password = Password
+        self.role=Role
+    def hardCodedData(self):
+        users.append(self)
+        return users
+    def validateLogin(self, email, password):
+        for user in users:
+            if user.email == email and user.password == password:
+                return user
+        return None
+
+
+    def getUserName(self) -> str:
+        return self.name
+
+    def Welcome(self):
+        print('Hi Welcome Customer Happy Shoping', self.name)
+
+class Dress_Show_Case(Stylish_Dress_App):
+    cart = []
+    def init(self, Id, Name, Email, Password,Role):
+        super().init(Id, Name, Email, Password,Role)
+          # Initialize an empty cart for the user
+
+    def dresses_for_customer(self):
+        stayInCustomerMenu = True
+        while stayInCustomerMenu:
+            print("\n------------------")
+            print("Customer Menu")
+            print("1. Display the Dresses")
+            print("2. Add to cart")
+            print("3. Order History")
+            print("4. Delete your history")
+            print("5. Logout")
+            choice = int(input("Enter your Choice: "))
+
+            if choice == 1:
+                dress1 = Dress_List(1, 'Silksarees', '5', '2000')
+                dress2 = Dress_List(2, 'Cottonshirt', '3', '1000')
+                dress3 = Dress_List(3, 'Chudidhar', '2', '3000')
+                Dress_List_Items.append(dress1)
+                Dress_List_Items.append(dress2)
+                Dress_List_Items.append(dress3)
+
+                for dress in Dress_List_Items:
+                    print(dress.Dress_Id)
+                    print(dress.Dress_Name)
+                    print(dress.Quantity)
+                    print(dress.Price)
+                    print('*************************************************')
+
+            if choice == 2:
+                while True:
+                    print("Dress List:")
+                    for dress in Dress_List_Items:
+                        print(dress.Dress_Id, dress.Dress_Name, dress.Quantity, dress.Price)
+                    
+                    item_id = int(input("Enter the ID of the item to add to cart (or 0 to stop adding): "))
+                    if item_id == 0:
+                        break
+                    quantity = int(input("Enter the quantity: "))
+                    selected_item = None
+                    for dress in Dress_List_Items:
+                        if dress.Dress_Id == item_id:
+                            selected_item = dress
+                            break
+                    
+                    if selected_item is None:
+                        print("Invalid item ID. Please try again.")
+                    else:
+                        total_price = int(selected_item.Price) * quantity
+                        cart_item = {
+                            'Dress_Id': selected_item.Dress_Id,
+                            'Dress_Name': selected_item.Dress_Name,
+                            'Quantity': quantity,
+                            'Price': total_price
+                        }
+                        self.cart.append(cart_item)
+                        print("Item added to cart successfully.")
+                    view_cart = input("Do you want to see the cart? (yes/no): ")
+                    if view_cart.lower() == "yes":
+                        if len(self.cart) == 0:
+                            print("Your cart is empty.")
+                        else:
+                            print("Your Cart:")
+                            for item in self.cart:
+                                print("Dress ID:", item['Dress_Id'])
+                                print("Dress Name:", item['Dress_Name'])
+                                print("Quantity:", item['Quantity'])
+                                print("Price:", item['Price'])
+                                print('*************************************************************')
+                        print("Payment Options:")
+                        print("1. Card")
+                        print("2. UPI")
+                        print("3. Cash on Delivery")
+                        payment_choice = int(input("Choose a payment option: "))
+                    
+                        if payment_choice == 1:
+                            print("Payment successful. Thank you for using card.")
+                        elif payment_choice == 2:
+                            print("Payment successful. Thank you for using UPI.")
+                        elif payment_choice == 3:
+                            print("Payment successful. Thank you for choosing Cash on Delivery.")
+                        else:
+                            print("Invalid payment option.")
+                        order_data = Orders(self.order_count, self.userid, datetime.datetime.now(), self.cart)
+                        orders_list.append(order_data)
+                        self.order_count += 1  
+                        break
+
+            if choice == 3:
+                for order in orders_list:
+                    print(f"Order ID: {order.Order_id}")
+                    print(f"User ID: {order.User_id}")
+                    print(f"Order At: {order.Order_at}")
+                    for item in self.cart:
+                        print("Dress Name:", item['Dress_Name'])
+                        print("Quantity:", item['Quantity'])
+                        print("Price:", item['Price'])
+                    print('*********************************************************')
+            if choice == 4:
+                if len(orders_list) == 0:
+                    print("No order history available.")
+                else:
+                    print("Order History:")
+                    for order in orders_list:
+                        print("Order ID:", order.Order_id)
+                        print("User ID:", order.User_id)
+                        print("Order At:", order.Order_at)
+                        print('*********************************************************')
+            
+                    delete_choice = input("Enter the Order ID to delete the history (or 'no' to cancel): ")
+                    if delete_choice == 'no':
+                        print("Deletion canceled.")
+                    else:
+                        delete_choice = int(delete_choice)
+                        deleted = False
+                        for order in orders_list:
+                            if order.Order_id == delete_choice:
+                                orders_list.remove(order)
+                                deleted = True
+                                break
+                        if deleted:
+                            print("Order history deleted successfully.")
+                        else:
+                            print("Invalid Order ID. Please try again.")
+                            
+            if choice == 5:
+                print("Logout Successfully! \n Thank you for your shoping")
+                break
+
+class AdminFlow(Stylish_Dress_App):
+    def init(self, Id, Name, Email, Password, Role):
+        super().init(Id, Name, Email, Password, Role)
+
+    def Welcome(self):
+        print('Hi Welcome Admin')
+        print(self.getUserName())
+
+class DeliveryFlow(Stylish_Dress_App):
+    def Welcome(self):
+        print('Hi Welcome Servicer')
+
+if __name__== "__main__":
+    app = Stylish_Dress_App(1, "Pooja", "pooja@gmail.com", "pooja123", "Admin")
+    app.hardCodedData()
+    app = Stylish_Dress_App(1, "Nithya", "nithya@gmail.com", "nithya123", "Customer")
+    app.hardCodedData()
+    app = Stylish_Dress_App(2, "Swetha", "swetha@gmail.com", "swetha456", "Customer")
+    app.hardCodedData()
+    app = Stylish_Dress_App(3, "Bakiya", "bakiya@gmail.com", "bakiya789", "Servicer")
+    app.hardCodedData()
+
+    login_user = app.validateLogin("nithya@gmail.com", "nithya123")
+
+    if login_user:
+        print('Login Success')
+        if login_user.role == "Admin":
+            admin = AdminFlow(login_user.userid, login_user.name, login_user.email, login_user.password, login_user.role)
+            admin.Welcome()
+        elif login_user.role == "Customer":
+            app.Welcome()
+            dress = Dress_Show_Case(login_user.userid, login_user.name, login_user.email, login_user.password, login_user.role)
+            dress.dresses_for_customer()
+        elif login_user.role == "Servicer":
+            servicer = DeliveryFlow(login_user.userid, login_user.name, login_user.email, login_user.password, login_user.role)
+            servicer.Welcome()
+         
