@@ -1,0 +1,134 @@
+users = []
+Rent_House_List_Items = []
+
+
+class Rent_house_List:
+    def __init__(self, house_id, house_name, sqrfeet, house_type,locality,city):
+        self.House_Id = house_id
+        self.House_Name = house_name
+        self.Sqrfeet=sqrfeet
+        self.House_Type = house_type
+        self.Locality = locality
+        self.City=city
+
+class RentHouse_App:
+    #order_count = 0
+
+    def __init__(self, Id: int, Name: str, Email: str, Password: str,Role:str):
+        self.userid = Id
+        self.name = Name
+        self.email = Email
+        self.password = Password
+        self.role=Role
+    def hardCodedData(self):
+        users.append(self)
+        return users
+    def validateLogin(self, email, password):
+        for user in users:
+            if user.email == email and user.password == password:
+                return user
+        return None
+
+
+    def getUserName(self) -> str:
+        return self.name
+
+    def Welcome(self):
+        print('Hi Welcome Customer New Life New Beginning:', self.name)
+
+class House_Show_Case(RentHouse_App):
+    #cart = []
+    def init(self, Id, Name, Email, Password,Role):
+        super().init(Id, Name, Email, Password,Role)
+
+
+    def houses_for_customer(self):
+        stayInCustomerMenu = True
+        while stayInCustomerMenu:
+            print("\n------------------")
+            print("Customer Menu")
+            print("1. Display the Houses")
+            print("2. Payment")
+            print("3.Advertisment of House")
+            print("4. Show History")
+            print("5. Logout")
+            choice = int(input("Enter your Choice: "))
+
+            if choice == 1:
+                house1 = Rent_house_List(1, 'Annai illam', '798', '1BHK','Kodambakkam','Chennai')
+                house2 = Rent_house_List(2, 'Lakshmi illam', '560', '2BHK','Goripalayam','Madurai')
+                house3 = Rent_house_List(3, 'Rosary illam', '1200', '3BHK','Annanagar','Vellore')
+                Rent_House_List_Items.append(house1)
+                Rent_House_List_Items.append(house2)
+                Rent_House_List_Items.append(house3)
+
+                for house in   Rent_House_List_Items:
+                    print(house.House_Id)
+                    print(house.House_Name)
+                    print(house.Sqrfeet)
+                    print(house.House_Type)
+                    print(house.Locality)
+                    print(house.City)
+                    print('*************************************************')
+
+            if choice == 2:
+                print("Payment Options:")
+                print("1. Card")
+                print("2. UPI")
+                
+                payment_choice = int(input("Choose a payment option: "))
+                if payment_choice == 1:
+                    print("Payment successful. Thank you for using card.")
+                elif payment_choice == 2:
+                    print("Payment successful. Thank you for using UPI.")
+                else:
+                    print("Invalid payment option.")
+                    break
+            if choice ==3:
+                print("Advertisment of House")
+            if choice == 4:
+                print("Show History of the house")
+
+            if choice == 5:
+                print("Logout Successfully! \n Thank you")
+                break
+
+class AdminFlow(RentHouse_App):
+    def init(self, Id, Name, Email, Password, Role):
+        super().init(Id, Name, Email, Password, Role)
+
+    def Welcome(self):
+        print('Hi Welcome Admin')
+        print(self.getUserName())
+
+class RentFlow(RentHouse_App):
+    def Welcome(self):
+        print('Hi Welcome Owner')
+
+if __name__== "__main__":
+    app = RentHouse_App(1, "Pooja", "pooja@gmail.com", "pooja123", "Admin")
+    app.hardCodedData()
+    app = RentHouse_App(1, "Divya", "divya@gmail.com", "divya123", "Customer")
+    app.hardCodedData()
+    app = RentHouse_App(2, "Monika", "monika@gmail.com", "monika456", "Customer")
+    app.hardCodedData()
+    app = RentHouse_App(3, "Janani", "janani@gmail.com", "janani789", "Owner")
+    app.hardCodedData()
+
+    login_user = app.validateLogin("divya@gmail.com", "divya123")
+
+    if login_user:
+        print('Login Success')
+        if login_user.role == "Admin":
+            admin = AdminFlow(login_user.userid, login_user.name, login_user.email, login_user.password, login_user.role)
+            admin.Welcome()
+        elif login_user.role == "Customer":
+            app.Welcome()
+            house = House_Show_Case(login_user.userid, login_user.name, login_user.email, login_user.password, login_user.role)
+            house.houses_for_customer()
+        elif login_user.role == "Owner":
+            owner = RentFlow(login_user.userid, login_user.name, login_user.email, login_user.password, login_user.role)
+            owner.Welcome()
+         
+
+        
